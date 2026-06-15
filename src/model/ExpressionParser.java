@@ -9,7 +9,8 @@ public class ExpressionParser {
 
         this.expression = expression
                 .replace(" ", "")
-                .replace(",", ".");
+                .replace(",", ".")
+                .replace("**", "^");
 
         this.position = 0;
 
@@ -56,8 +57,7 @@ public class ExpressionParser {
 
                 double next = parsePower();
 
-                value =
-                        (long) value / (long) next;
+                value = (long) value / (long) next;
 
                 continue;
             }
@@ -101,28 +101,15 @@ public class ExpressionParser {
 
         while (position < expression.length()) {
 
-            if (expression.startsWith("**", position)) {
-
-                position += 2;
-
-                value =
-                        Math.pow(
-                                value,
-                                parseFactor());
-
-                continue;
-            }
-
             char op = expression.charAt(position);
 
             if (op == '^') {
 
                 position++;
 
-                value =
-                        Math.pow(
-                                value,
-                                parseFactor());
+                value = Math.pow(
+                        value,
+                        parseFactor());
 
             } else {
                 break;
@@ -140,7 +127,11 @@ public class ExpressionParser {
 
             double value = parseExpression();
 
-            position++;
+            if (position < expression.length()
+                    && expression.charAt(position) == ')') {
+
+                position++;
+            }
 
             return value;
         }
